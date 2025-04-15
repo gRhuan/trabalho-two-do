@@ -1,20 +1,30 @@
-# Use a imagem do Node.js
-FROM node:20-alpine
+# Etapa de build
+FROM node:20-alpine AS builder
 
-# Crie e defina o diretório do app no container
 WORKDIR /app
 
-# Copie os arquivos de pacotes
 COPY package.json yarn.lock ./
+RUN yarn install
 
-# Instale as dependências
-RUN yarn install --frozen-lockfile
+COPY . .
 
-# Copie os arquivos compilados para dentro do container
-COPY dist ./dist
+# Gera o cliente do Prisma
+RUN yarn prisma generate
 
-# Exponha a porta que seu app vai rodar
-EXPOSE 3333
+# Transpila TypeScript para JavaScript
+RUN yarn build
 
-# Comando para iniciar a aplicação (usando o JavaScript compilado)
+# Etapa de produção
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma ./prisma
+COPY package.json ./
+
+# Garante que o Prisma Client funcione corretamente
+RUN yarn prisma generate
+
 CMD ["node", "dist/main.js"]
