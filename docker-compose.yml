@@ -9,3 +9,4 @@ services:
       - ./dist:/app/dist
     environment:
       - NODE_ENV=production
+      - DATABASE_URL="file:./dev.db"
