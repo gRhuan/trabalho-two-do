@@ -1,14 +1,20 @@
-# Usa a imagem oficial do Node.js
-FROM node:20
+# Use a imagem do Node.js
+FROM node:20-alpine
 
+# Crie e defina o diretório do app no container
 WORKDIR /app
 
-COPY . .
+# Copie os arquivos de pacotes
+COPY package.json yarn.lock ./
 
-RUN yarn install
+# Instale as dependências
+RUN yarn install --frozen-lockfile
 
-RUN yarn prisma generate
+# Copie os arquivos compilados para dentro do container
+COPY dist ./dist
 
+# Exponha a porta que seu app vai rodar
 EXPOSE 3333
 
-CMD ["yarn", "dev"]
+# Comando para iniciar a aplicação (usando o JavaScript compilado)
+CMD ["node", "dist/main.js"]

@@ -6,7 +6,6 @@ services:
     ports:
       - "3333:3333"
     volumes:
-      - .:/app
+      - ./dist:/app/dist
     environment:
-      - NODE_ENV=development
-    command: yarn dev
+      - NODE_ENV=production
