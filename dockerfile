@@ -10,8 +10,6 @@ COPY package.json yarn.lock ./
 # Instale as dependências
 RUN yarn install --frozen-lockfile
 
-RUN prisma init
-
 # Copie os arquivos compilados para dentro do container
 COPY dist ./dist
 
