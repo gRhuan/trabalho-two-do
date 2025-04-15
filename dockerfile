@@ -12,7 +12,7 @@ COPY . .
 RUN yarn prisma generate
 
 # Transpila TypeScript para JavaScript
-RUN yarn build
+RUN yarn tsc
 
 # Etapa de produção
 FROM node:20-alpine
